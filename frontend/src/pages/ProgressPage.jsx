@@ -10,128 +10,137 @@ function ProgressPage() {
 
     if (isLoading) {
         return (
-            <div className="h-screen bg-base-100 flex flex-col">
+            <div className="min-h-screen bg-animated-gradient flex flex-col">
                 <Navbar />
                 <div className="flex-1 flex items-center justify-center">
-                    <span className="loading loading-spinner loading-lg"></span>
+                    <div className="size-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-base-100">
+        <div className="min-h-screen bg-animated-gradient relative overflow-hidden">
+            {/* Background Orbs */}
+            <div className="glowing-orb glowing-orb-purple w-96 h-96 top-20 left-10 opacity-30" />
+            <div className="glowing-orb glowing-orb-blue w-80 h-80 bottom-40 right-20 opacity-25" />
+
             <Navbar />
 
-            <div className="container mx-auto px-4 py-8">
-                <h1 className="text-4xl font-bold mb-8">My Progress</h1>
+            <div className="relative z-10 container mx-auto px-4 py-8">
+                <h1 className="text-5xl font-black mb-8">
+                    <span className="gradient-text-purple-blue">My</span> Progress
+                </h1>
 
                 {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     {/* Total Solved */}
-                    <div className="stat bg-base-200 rounded-xl shadow-lg">
-                        <div className="stat-figure text-primary">
-                            <Target size={32} />
+                    <div className="glass-card p-6 rounded-2xl border-purple-500/20 hover-glow-purple transition-all duration-300">
+                        <div className="flex items-center justify-between mb-4">
+                            <Target className="size-10 text-purple-400" />
                         </div>
-                        <div className="stat-title">Total Solved</div>
-                        <div className="stat-value text-primary">{stats.totalSolved || 0}</div>
-                        <div className="stat-desc">
+                        <div className="text-sm text-gray-400 mb-2">Total Solved</div>
+                        <div className="text-4xl font-black gradient-text-purple-blue mb-2">{stats.totalSolved || 0}</div>
+                        <div className="text-xs text-gray-500">
                             Easy: {stats.easySolved || 0} • Medium: {stats.mediumSolved || 0} • Hard: {stats.hardSolved || 0}
                         </div>
                     </div>
 
                     {/* Points */}
-                    <div className="stat bg-base-200 rounded-xl shadow-lg">
-                        <div className="stat-figure text-secondary">
-                            <Award size={32} />
+                    <div className="glass-card p-6 rounded-2xl border-blue-500/20 hover-glow-blue transition-all duration-300">
+                        <div className="flex items-center justify-between mb-4">
+                            <Award className="size-10 text-blue-400" />
                         </div>
-                        <div className="stat-title">Total Points</div>
-                        <div className="stat-value text-secondary">{points}</div>
-                        <div className="stat-desc">Keep solving to earn more!</div>
+                        <div className="text-sm text-gray-400 mb-2">Total Points</div>
+                        <div className="text-4xl font-black gradient-text-purple-blue mb-2">{points}</div>
+                        <div className="text-xs text-gray-500">Keep solving to earn more!</div>
                     </div>
 
                     {/* Current Streak */}
-                    <div className="stat bg-base-200 rounded-xl shadow-lg">
-                        <div className="stat-figure text-warning">
-                            <Flame size={32} />
+                    <div className="glass-card p-6 rounded-2xl border-purple-500/20 hover-glow-purple transition-all duration-300">
+                        <div className="flex items-center justify-between mb-4">
+                            <Flame className="size-10 text-orange-400" />
                         </div>
-                        <div className="stat-title">Current Streak</div>
-                        <div className="stat-value text-warning">{stats.currentStreak || 0} days</div>
-                        <div className="stat-desc">Longest: {stats.longestStreak || 0} days</div>
+                        <div className="text-sm text-gray-400 mb-2">Current Streak</div>
+                        <div className="text-4xl font-black text-orange-400 mb-2">{stats.currentStreak || 0} days</div>
+                        <div className="text-xs text-gray-500">Longest: {stats.longestStreak || 0} days</div>
                     </div>
 
                     {/* Last Solved */}
-                    <div className="stat bg-base-200 rounded-xl shadow-lg">
-                        <div className="stat-figure text-info">
-                            <Calendar size={32} />
+                    <div className="glass-card p-6 rounded-2xl border-blue-500/20 hover-glow-blue transition-all duration-300">
+                        <div className="flex items-center justify-between mb-4">
+                            <Calendar className="size-10 text-blue-400" />
                         </div>
-                        <div className="stat-title">Last Solved</div>
-                        <div className="stat-value text-sm">
+                        <div className="text-sm text-gray-400 mb-2">Last Solved</div>
+                        <div className="text-lg font-bold text-white mb-2">
                             {stats.lastSolvedDate ? new Date(stats.lastSolvedDate).toLocaleDateString() : "Never"}
                         </div>
-                        <div className="stat-desc">Keep the streak going!</div>
+                        <div className="text-xs text-gray-500">Keep the streak going!</div>
                     </div>
                 </div>
 
                 {/* Difficulty Distribution */}
-                <div className="bg-base-200 rounded-xl shadow-lg p-6 mb-8">
-                    <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                        <TrendingUp size={24} />
-                        Difficulty Distribution
+                <div className="glass-card p-8 rounded-2xl border-purple-500/20 glow-purple mb-8">
+                    <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
+                        <TrendingUp size={28} className="text-purple-400" />
+                        <span className="gradient-text-purple-blue">Difficulty Distribution</span>
                     </h2>
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                         {/* Easy */}
                         <div>
-                            <div className="flex justify-between mb-1">
-                                <span className="text-sm font-medium">Easy</span>
-                                <span className="text-sm">{stats.easySolved || 0} solved</span>
+                            <div className="flex justify-between mb-2">
+                                <span className="text-sm font-semibold text-green-400">Easy</span>
+                                <span className="text-sm text-gray-400">{stats.easySolved || 0} solved</span>
                             </div>
-                            <progress
-                                className="progress progress-success w-full"
-                                value={stats.easySolved || 0}
-                                max={Math.max(stats.totalSolved || 1, 10)}
-                            ></progress>
+                            <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
+                                <div
+                                    className="h-full bg-gradient-to-r from-green-500 to-green-400 rounded-full transition-all duration-500"
+                                    style={{ width: `${((stats.easySolved || 0) / Math.max(stats.totalSolved || 1, 10)) * 100}%` }}
+                                />
+                            </div>
                         </div>
 
                         {/* Medium */}
                         <div>
-                            <div className="flex justify-between mb-1">
-                                <span className="text-sm font-medium">Medium</span>
-                                <span className="text-sm">{stats.mediumSolved || 0} solved</span>
+                            <div className="flex justify-between mb-2">
+                                <span className="text-sm font-semibold text-yellow-400">Medium</span>
+                                <span className="text-sm text-gray-400">{stats.mediumSolved || 0} solved</span>
                             </div>
-                            <progress
-                                className="progress progress-warning w-full"
-                                value={stats.mediumSolved || 0}
-                                max={Math.max(stats.totalSolved || 1, 10)}
-                            ></progress>
+                            <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
+                                <div
+                                    className="h-full bg-gradient-to-r from-yellow-500 to-yellow-400 rounded-full transition-all duration-500"
+                                    style={{ width: `${((stats.mediumSolved || 0) / Math.max(stats.totalSolved || 1, 10)) * 100}%` }}
+                                />
+                            </div>
                         </div>
 
                         {/* Hard */}
                         <div>
-                            <div className="flex justify-between mb-1">
-                                <span className="text-sm font-medium">Hard</span>
-                                <span className="text-sm">{stats.hardSolved || 0} solved</span>
+                            <div className="flex justify-between mb-2">
+                                <span className="text-sm font-semibold text-red-400">Hard</span>
+                                <span className="text-sm text-gray-400">{stats.hardSolved || 0} solved</span>
                             </div>
-                            <progress
-                                className="progress progress-error w-full"
-                                value={stats.hardSolved || 0}
-                                max={Math.max(stats.totalSolved || 1, 10)}
-                            ></progress>
+                            <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
+                                <div
+                                    className="h-full bg-gradient-to-r from-red-500 to-red-400 rounded-full transition-all duration-500"
+                                    style={{ width: `${((stats.hardSolved || 0) / Math.max(stats.totalSolved || 1, 10)) * 100}%` }}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Recent Activity */}
                 {stats.solvedProblems && stats.solvedProblems.length > 0 && (
-                    <div className="bg-base-200 rounded-xl shadow-lg p-6">
-                        <h2 className="text-2xl font-bold mb-4">Recent Activity</h2>
+                    <div className="glass-card p-8 rounded-2xl border-purple-500/20 glow-purple-blue">
+                        <h2 className="text-3xl font-bold mb-6 gradient-text-purple-blue">Recent Activity</h2>
                         <div className="overflow-x-auto">
-                            <table className="table">
+                            <table className="w-full">
                                 <thead>
-                                    <tr>
-                                        <th>Problem ID</th>
-                                        <th>Difficulty</th>
-                                        <th>Solved At</th>
+                                    <tr className="border-b border-purple-500/20">
+                                        <th className="text-left py-4 px-4 text-gray-400 font-semibold">Problem ID</th>
+                                        <th className="text-left py-4 px-4 text-gray-400 font-semibold">Difficulty</th>
+                                        <th className="text-left py-4 px-4 text-gray-400 font-semibold">Solved At</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -139,21 +148,21 @@ function ProgressPage() {
                                         .slice(-10)
                                         .reverse()
                                         .map((problem, idx) => (
-                                            <tr key={idx}>
-                                                <td>{problem.problemId}</td>
-                                                <td>
+                                            <tr key={idx} className="border-b border-purple-500/10 hover:bg-white/5 transition-colors">
+                                                <td className="py-4 px-4 text-white font-medium">{problem.problemId}</td>
+                                                <td className="py-4 px-4">
                                                     <span
-                                                        className={`badge ${problem.difficulty === "Easy"
-                                                                ? "badge-success"
+                                                        className={`px-3 py-1 rounded-full text-sm font-semibold border ${problem.difficulty === "Easy"
+                                                                ? "bg-green-500/20 text-green-400 border-green-500/30"
                                                                 : problem.difficulty === "Medium"
-                                                                    ? "badge-warning"
-                                                                    : "badge-error"
+                                                                    ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30"
+                                                                    : "bg-red-500/20 text-red-400 border-red-500/30"
                                                             }`}
                                                     >
                                                         {problem.difficulty}
                                                     </span>
                                                 </td>
-                                                <td>{new Date(problem.solvedAt).toLocaleDateString()}</td>
+                                                <td className="py-4 px-4 text-gray-400">{new Date(problem.solvedAt).toLocaleDateString()}</td>
                                             </tr>
                                         ))}
                                 </tbody>

@@ -1,29 +1,50 @@
 import { useState } from "react";
 import { useLeaderboard } from "../hooks/useDashboard";
 import Navbar from "../components/Navbar";
-import { Trophy, Flame } from "lucide-react";
+import { Trophy, Flame, Medal } from "lucide-react";
 
 function LeaderboardPage() {
     const [timeframe, setTimeframe] = useState("all");
     const { data: leaderboardData, isLoading } = useLeaderboard(timeframe);
 
+    const getRankColor = (rank) => {
+        if (rank === 1) return "text-yellow-400";
+        if (rank === 2) return "text-gray-300";
+        if (rank === 3) return "text-orange-500";
+        return "text-purple-400";
+    };
+
+    const getRankGlow = (rank) => {
+        if (rank === 1) return "glow-yellow";
+        if (rank === 2) return "glow-gray";
+        if (rank === 3) return "glow-orange";
+        return "";
+    };
+
     return (
-        <div className="min-h-screen bg-base-100">
+        <div className="min-h-screen bg-animated-gradient relative overflow-hidden">
+            {/* Background Orbs */}
+            <div className="glowing-orb glowing-orb-purple w-96 h-96 top-20 right-10 opacity-30" />
+            <div className="glowing-orb glowing-orb-blue w-80 h-80 bottom-40 left-20 opacity-25" />
+
             <Navbar />
 
-            <div className="container mx-auto px-4 py-8">
-                <h1 className="text-4xl font-bold mb-8 flex items-center gap-3">
-                    <Trophy size={40} className="text-yellow-500" />
-                    Leaderboard
+            <div className="relative z-10 container mx-auto px-4 py-8">
+                <h1 className="text-5xl font-black mb-8 flex items-center gap-4">
+                    <Trophy size={48} className="text-yellow-400" />
+                    <span className="gradient-text-purple-blue">Leaderboard</span>
                 </h1>
 
                 {/* Timeframe Filter */}
-                <div className="flex gap-2 justify-center mb-8">
+                <div className="flex gap-3 justify-center mb-8">
                     {["all", "daily", "weekly", "monthly"].map((tf) => (
                         <button
                             key={tf}
                             onClick={() => setTimeframe(tf)}
-                            className={`btn btn-sm ${timeframe === tf ? "btn-primary" : "btn-outline"}`}
+                            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${timeframe === tf
+                                    ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white glow-purple-blue"
+                                    : "glass-card text-gray-300 hover:text-white hover-glow-purple border-purple-500/20"
+                                }`}
                         >
                             {tf.charAt(0).toUpperCase() + tf.slice(1)}
                         </button>
@@ -31,55 +52,67 @@ function LeaderboardPage() {
                 </div>
 
                 {/* Leaderboard Table */}
-                <div className="bg-base-200 rounded-xl shadow-lg p-6">
-                    <h2 className="text-2xl font-bold mb-4">Top Coders</h2>
+                <div className="glass-card p-8 rounded-2xl border-purple-500/20 glow-purple-blue">
+                    <h2 className="text-3xl font-bold mb-6 gradient-text-purple-blue">Top Coders</h2>
 
                     {isLoading ? (
-                        <div className="flex justify-center py-8">
-                            <span className="loading loading-spinner loading-lg"></span>
+                        <div className="flex justify-center py-12">
+                            <div className="size-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
-                            <table className="table">
+                            <table className="w-full">
                                 <thead>
-                                    <tr>
-                                        <th>Rank</th>
-                                        <th>User</th>
-                                        <th>Points</th>
-                                        <th>Solved</th>
-                                        <th>Streak</th>
+                                    <tr className="border-b border-purple-500/20">
+                                        <th className="text-left py-4 px-4 text-gray-400 font-semibold">Rank</th>
+                                        <th className="text-left py-4 px-4 text-gray-400 font-semibold">User</th>
+                                        <th className="text-left py-4 px-4 text-gray-400 font-semibold">Points</th>
+                                        <th className="text-left py-4 px-4 text-gray-400 font-semibold">Solved</th>
+                                        <th className="text-left py-4 px-4 text-gray-400 font-semibold">Streak</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {leaderboardData?.data?.leaderboard?.map((user) => (
-                                        <tr key={user._id} className="hover">
-                                            <td>
-                                                <div className="flex items-center gap-2">
-                                                    {user.rank === 1 && <Trophy className="text-yellow-500" size={20} />}
-                                                    {user.rank === 2 && <Trophy className="text-gray-400" size={20} />}
-                                                    {user.rank === 3 && <Trophy className="text-orange-600" size={20} />}
-                                                    <span className="font-bold">#{user.rank}</span>
+                                        <tr
+                                            key={user._id}
+                                            className={`border-b border-purple-500/10 hover:bg-white/5 transition-all duration-300 ${user.rank <= 3 ? getRankGlow(user.rank) : ""
+                                                }`}
+                                        >
+                                            <td className="py-4 px-4">
+                                                <div className="flex items-center gap-3">
+                                                    {user.rank === 1 && <Trophy className="text-yellow-400" size={24} />}
+                                                    {user.rank === 2 && <Medal className="text-gray-300" size={24} />}
+                                                    {user.rank === 3 && <Medal className="text-orange-500" size={24} />}
+                                                    <span className={`text-2xl font-black ${getRankColor(user.rank)}`}>
+                                                        #{user.rank}
+                                                    </span>
                                                 </div>
                                             </td>
-                                            <td>
+                                            <td className="py-4 px-4">
                                                 <div className="flex items-center gap-3">
                                                     <div className="avatar">
-                                                        <div className="w-10 h-10 rounded-full">
+                                                        <div className="w-12 h-12 rounded-full ring-2 ring-purple-500/30">
                                                             <img
-                                                                src={user.profileImage || "https://via.placeholder.com/40"}
+                                                                src={user.profileImage || "https://via.placeholder.com/48"}
                                                                 alt={user.name}
                                                             />
                                                         </div>
                                                     </div>
-                                                    <span className="font-medium">{user.name}</span>
+                                                    <span className="font-semibold text-white text-lg">{user.name}</span>
                                                 </div>
                                             </td>
-                                            <td className="font-bold text-primary">{user.points}</td>
-                                            <td>{user.stats?.totalSolved || 0}</td>
-                                            <td>
-                                                <div className="flex items-center gap-1">
-                                                    <Flame size={16} className="text-orange-500" />
-                                                    {user.stats?.currentStreak || 0}
+                                            <td className="py-4 px-4">
+                                                <span className="text-2xl font-black gradient-text-purple-blue">{user.points}</span>
+                                            </td>
+                                            <td className="py-4 px-4">
+                                                <span className="text-lg font-semibold text-gray-300">{user.stats?.totalSolved || 0}</span>
+                                            </td>
+                                            <td className="py-4 px-4">
+                                                <div className="flex items-center gap-2">
+                                                    <Flame size={20} className="text-orange-400" />
+                                                    <span className="text-lg font-semibold text-orange-400">
+                                                        {user.stats?.currentStreak || 0}
+                                                    </span>
                                                 </div>
                                             </td>
                                         </tr>

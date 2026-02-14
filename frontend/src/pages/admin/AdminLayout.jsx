@@ -20,8 +20,8 @@ export default function AdminLayout() {
     // Show loading state
     if (!isLoaded) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <span className="loading loading-spinner loading-lg"></span>
+            <div className="flex items-center justify-center min-h-screen bg-animated-gradient">
+                <div className="size-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
             </div>
         );
     }
@@ -39,12 +39,16 @@ export default function AdminLayout() {
     ];
 
     return (
-        <div className="min-h-screen bg-base-200">
+        <div className="min-h-screen bg-animated-gradient relative overflow-hidden">
+            {/* Background Orbs */}
+            <div className="glowing-orb glowing-orb-purple w-96 h-96 top-20 left-10 opacity-20" />
+            <div className="glowing-orb glowing-orb-blue w-80 h-80 bottom-40 right-20 opacity-15" />
+
             {/* Mobile menu button */}
             <div className="lg:hidden fixed top-4 left-4 z-50">
                 <button
                     onClick={() => setSidebarOpen(!sidebarOpen)}
-                    className="btn btn-circle btn-primary"
+                    className="size-12 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white flex items-center justify-center glow-purple-blue"
                 >
                     {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
                 </button>
@@ -53,13 +57,13 @@ export default function AdminLayout() {
             {/* Sidebar */}
             <aside
                 className={`
-          fixed top-0 left-0 h-full w-64 bg-gradient-to-b from-primary to-primary-focus
-          text-primary-content shadow-xl z-40 transition-transform duration-300
+          fixed top-0 left-0 h-full w-64 glass-card border-r border-purple-500/20
+          z-40 transition-transform duration-300
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
         `}
             >
                 <div className="p-6">
-                    <h1 className="text-2xl font-bold mb-8">Admin Panel</h1>
+                    <h1 className="text-3xl font-black mb-8 gradient-text-purple-blue">Admin Panel</h1>
 
                     <nav className="space-y-2">
                         {navItems.map((item) => (
@@ -67,33 +71,33 @@ export default function AdminLayout() {
                                 key={item.to}
                                 to={item.to}
                                 onClick={() => setSidebarOpen(false)}
-                                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary-focus/50 transition-colors"
+                                className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 hover-glow-purple transition-all duration-300"
                             >
                                 <item.icon size={20} />
-                                <span>{item.label}</span>
+                                <span className="font-medium">{item.label}</span>
                             </Link>
                         ))}
                     </nav>
                 </div>
 
                 {/* Admin info */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-primary-content/20">
+                <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-purple-500/20">
                     <div className="flex items-center gap-3">
                         <img
                             src={user?.imageUrl}
                             alt={user?.fullName || "Admin"}
-                            className="w-10 h-10 rounded-full"
+                            className="w-10 h-10 rounded-full ring-2 ring-purple-500/30"
                         />
                         <div className="flex-1 min-w-0">
-                            <p className="font-medium truncate">{user?.fullName}</p>
-                            <p className="text-xs opacity-75 truncate">Administrator</p>
+                            <p className="font-semibold text-white truncate">{user?.fullName}</p>
+                            <p className="text-xs text-purple-400 truncate">Administrator</p>
                         </div>
                     </div>
                 </div>
             </aside>
 
             {/* Main content */}
-            <main className="lg:ml-64 min-h-screen">
+            <main className="lg:ml-64 min-h-screen relative z-10">
                 <div className="p-6 lg:p-8">
                     <Outlet />
                 </div>

@@ -6,8 +6,6 @@ function Navbar() {
   const location = useLocation();
   const { user } = useUser();
 
-  console.log(location);
-
   const isActive = (path) => location.pathname === path;
   const isAdminPath = (path) => location.pathname.startsWith(path);
 
@@ -16,115 +14,117 @@ function Navbar() {
   const isAdmin = user?.primaryEmailAddress?.emailAddress === ADMIN_EMAIL;
 
   return (
-    <nav className="bg-base-100/80 backdrop-blur-md border-b border-primary/20 sticky top-0 z-50 shadow-lg">
-      <div className="max-w-7xl mx-auto p-4 flex items-center justify-between">
+    <nav className="glass border-b border-purple-500/20 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* LOGO */}
         <Link
           to="/"
-          className="group flex items-center gap-3 hover:scale-105 transition-transform duration-200"
+          className="group flex items-center gap-3 hover:scale-105 transition-all duration-300"
         >
-          <div className="size-10 rounded-xl bg-gradient-to-r from-primary via-secondary to-accent flex items-center justify-center shadow-lg ">
+          <div className="size-11 rounded-xl bg-gradient-to-br from-purple-500 via-purple-600 to-blue-500 flex items-center justify-center glow-purple-blue">
             <SparklesIcon className="size-6 text-white" />
           </div>
 
           <div className="flex flex-col">
-            <span className="font-black text-xl bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent font-mono tracking-wider">
+            <span className="font-black text-xl gradient-text-purple-blue font-mono tracking-wider">
               InstructCode
             </span>
-            <span className="text-xs text-base-content/60 font-medium -mt-1">Code Together</span>
+            <span className="text-xs text-gray-400 font-medium -mt-1">Code Together</span>
           </div>
         </Link>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           {/* PROBLEMS PAGE LINK */}
           <Link
             to={"/problems"}
-            className={`px-4 py-2.5 rounded-lg transition-all duration-200 
+            className={`px-4 py-2.5 rounded-xl transition-all duration-300 font-medium
               ${isActive("/problems")
-                ? "bg-primary text-primary-content"
-                : "hover:bg-base-200 text-base-content/70 hover:text-base-content"
+                ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white glow-purple-blue"
+                : "text-gray-300 hover:text-white hover:bg-white/5 hover-glow-purple"
               }
-              
               `}
           >
-            <div className="flex items-center gap-x-2.5">
+            <div className="flex items-center gap-2.5">
               <BookOpenIcon className="size-4" />
-              <span className="font-medium hidden sm:inline">Problems</span>
+              <span className="hidden sm:inline">Problems</span>
             </div>
           </Link>
 
           {/* PROGRESS PAGE LINK */}
           <Link
             to={"/progress"}
-            className={`px-4 py-2.5 rounded-lg transition-all duration-200 
+            className={`px-4 py-2.5 rounded-xl transition-all duration-300 font-medium
               ${isActive("/progress")
-                ? "bg-primary text-primary-content"
-                : "hover:bg-base-200 text-base-content/70 hover:text-base-content"
+                ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white glow-purple-blue"
+                : "text-gray-300 hover:text-white hover:bg-white/5 hover-glow-purple"
               }
-              
               `}
           >
-            <div className="flex items-center gap-x-2.5">
+            <div className="flex items-center gap-2.5">
               <TrendingUp className="size-4" />
-              <span className="font-medium hidden sm:inline">Progress</span>
+              <span className="hidden sm:inline">Progress</span>
             </div>
           </Link>
 
           {/* LEADERBOARD PAGE LINK */}
           <Link
             to={"/leaderboard"}
-            className={`px-4 py-2.5 rounded-lg transition-all duration-200 
+            className={`px-4 py-2.5 rounded-xl transition-all duration-300 font-medium
               ${isActive("/leaderboard")
-                ? "bg-primary text-primary-content"
-                : "hover:bg-base-200 text-base-content/70 hover:text-base-content"
+                ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white glow-purple-blue"
+                : "text-gray-300 hover:text-white hover:bg-white/5 hover-glow-purple"
               }
-              
               `}
           >
-            <div className="flex items-center gap-x-2.5">
+            <div className="flex items-center gap-2.5">
               <Trophy className="size-4" />
-              <span className="font-medium hidden sm:inline">Leaderboard</span>
+              <span className="hidden sm:inline">Leaderboard</span>
             </div>
           </Link>
 
-          {/* DASHBORD PAGE LINK */}
+          {/* DASHBOARD PAGE LINK */}
           <Link
             to={"/dashboard"}
-            className={`px-4 py-2.5 rounded-lg transition-all duration-200 
+            className={`px-4 py-2.5 rounded-xl transition-all duration-300 font-medium
               ${isActive("/dashboard")
-                ? "bg-primary text-primary-content"
-                : "hover:bg-base-200 text-base-content/70 hover:text-base-content"
+                ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white glow-purple-blue"
+                : "text-gray-300 hover:text-white hover:bg-white/5 hover-glow-purple"
               }
-              
               `}
           >
-            <div className="flex items-center gap-x-2.5">
+            <div className="flex items-center gap-2.5">
               <LayoutDashboardIcon className="size-4" />
-              <span className="font-medium hidden sm:inline">Dashbord</span>
+              <span className="hidden sm:inline">Dashboard</span>
             </div>
           </Link>
 
-          {/* ADMIN PANEL LINK - Only visible to admin */}
+          {/* ADMIN LINK - Only show if user is admin */}
           {isAdmin && (
             <Link
-              to={"/admin/dashboard"}
-              className={`px-4 py-2.5 rounded-lg transition-all duration-200 
+              to={"/admin"}
+              className={`px-4 py-2.5 rounded-xl transition-all duration-300 font-medium
                 ${isAdminPath("/admin")
-                  ? "bg-warning text-warning-content"
-                  : "hover:bg-base-200 text-base-content/70 hover:text-base-content"
+                  ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white glow-purple-blue"
+                  : "text-gray-300 hover:text-white hover:bg-white/5 hover-glow-purple"
                 }
-                
                 `}
             >
-              <div className="flex items-center gap-x-2.5">
+              <div className="flex items-center gap-2.5">
                 <ShieldCheck className="size-4" />
-                <span className="font-medium hidden sm:inline">Admin Panel</span>
+                <span className="hidden sm:inline">Admin</span>
               </div>
             </Link>
           )}
 
-          <div className="ml-4 mt-2">
-            <UserButton />
+          {/* USER BUTTON */}
+          <div className="ml-2 rounded-full ring-2 ring-purple-500/30 hover:ring-purple-500/60 transition-all duration-300">
+            <UserButton
+              appearance={{
+                elements: {
+                  avatarBox: "size-10",
+                },
+              }}
+            />
           </div>
         </div>
       </div>
