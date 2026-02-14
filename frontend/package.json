@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "instructcode-frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -20,10 +20,12 @@
     "date-fns": "^4.1.0",
     "lucide-react": "^0.548.0",
     "react": "^19.1.1",
+    "react-calendar-heatmap": "^1.10.0",
     "react-dom": "^19.1.1",
     "react-hot-toast": "^2.6.0",
     "react-resizable-panels": "^3.0.6",
     "react-router": "^7.9.4",
+    "recharts": "^3.7.0",
     "stream-chat": "^9.23.0",
     "stream-chat-react": "^13.9.0",
     "tailwindcss": "^4.1.14"

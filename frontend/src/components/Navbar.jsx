@@ -1,13 +1,19 @@
 import { Link, useLocation } from "react-router";
-import { BookOpenIcon, LayoutDashboardIcon, SparklesIcon } from "lucide-react";
-import { UserButton } from "@clerk/clerk-react";
+import { BookOpenIcon, LayoutDashboardIcon, SparklesIcon, ShieldCheck, TrendingUp, Trophy } from "lucide-react";
+import { UserButton, useUser } from "@clerk/clerk-react";
 
 function Navbar() {
   const location = useLocation();
+  const { user } = useUser();
 
   console.log(location);
 
   const isActive = (path) => location.pathname === path;
+  const isAdminPath = (path) => location.pathname.startsWith(path);
+
+  // Check if user is admin
+  const ADMIN_EMAIL = "psubramanya742@gmail.com";
+  const isAdmin = user?.primaryEmailAddress?.emailAddress === ADMIN_EMAIL;
 
   return (
     <nav className="bg-base-100/80 backdrop-blur-md border-b border-primary/20 sticky top-0 z-50 shadow-lg">
@@ -23,7 +29,7 @@ function Navbar() {
 
           <div className="flex flex-col">
             <span className="font-black text-xl bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent font-mono tracking-wider">
-              Talent IQ
+              InstructCode
             </span>
             <span className="text-xs text-base-content/60 font-medium -mt-1">Code Together</span>
           </div>
@@ -34,10 +40,9 @@ function Navbar() {
           <Link
             to={"/problems"}
             className={`px-4 py-2.5 rounded-lg transition-all duration-200 
-              ${
-                isActive("/problems")
-                  ? "bg-primary text-primary-content"
-                  : "hover:bg-base-200 text-base-content/70 hover:text-base-content"
+              ${isActive("/problems")
+                ? "bg-primary text-primary-content"
+                : "hover:bg-base-200 text-base-content/70 hover:text-base-content"
               }
               
               `}
@@ -48,14 +53,47 @@ function Navbar() {
             </div>
           </Link>
 
+          {/* PROGRESS PAGE LINK */}
+          <Link
+            to={"/progress"}
+            className={`px-4 py-2.5 rounded-lg transition-all duration-200 
+              ${isActive("/progress")
+                ? "bg-primary text-primary-content"
+                : "hover:bg-base-200 text-base-content/70 hover:text-base-content"
+              }
+              
+              `}
+          >
+            <div className="flex items-center gap-x-2.5">
+              <TrendingUp className="size-4" />
+              <span className="font-medium hidden sm:inline">Progress</span>
+            </div>
+          </Link>
+
+          {/* LEADERBOARD PAGE LINK */}
+          <Link
+            to={"/leaderboard"}
+            className={`px-4 py-2.5 rounded-lg transition-all duration-200 
+              ${isActive("/leaderboard")
+                ? "bg-primary text-primary-content"
+                : "hover:bg-base-200 text-base-content/70 hover:text-base-content"
+              }
+              
+              `}
+          >
+            <div className="flex items-center gap-x-2.5">
+              <Trophy className="size-4" />
+              <span className="font-medium hidden sm:inline">Leaderboard</span>
+            </div>
+          </Link>
+
           {/* DASHBORD PAGE LINK */}
           <Link
             to={"/dashboard"}
             className={`px-4 py-2.5 rounded-lg transition-all duration-200 
-              ${
-                isActive("/dashboard")
-                  ? "bg-primary text-primary-content"
-                  : "hover:bg-base-200 text-base-content/70 hover:text-base-content"
+              ${isActive("/dashboard")
+                ? "bg-primary text-primary-content"
+                : "hover:bg-base-200 text-base-content/70 hover:text-base-content"
               }
               
               `}
@@ -65,6 +103,25 @@ function Navbar() {
               <span className="font-medium hidden sm:inline">Dashbord</span>
             </div>
           </Link>
+
+          {/* ADMIN PANEL LINK - Only visible to admin */}
+          {isAdmin && (
+            <Link
+              to={"/admin/dashboard"}
+              className={`px-4 py-2.5 rounded-lg transition-all duration-200 
+                ${isAdminPath("/admin")
+                  ? "bg-warning text-warning-content"
+                  : "hover:bg-base-200 text-base-content/70 hover:text-base-content"
+                }
+                
+                `}
+            >
+              <div className="flex items-center gap-x-2.5">
+                <ShieldCheck className="size-4" />
+                <span className="font-medium hidden sm:inline">Admin Panel</span>
+              </div>
+            </Link>
+          )}
 
           <div className="ml-4 mt-2">
             <UserButton />

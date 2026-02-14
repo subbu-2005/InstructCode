@@ -1,110 +1,178 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { PROBLEMS } from "../data/problems";
+import { useProblems, useProblem } from "../hooks/useProblems";
+import { useCheckBookmark, useAddBookmark, useRemoveBookmark } from "../hooks/useBookmarks";
+import { useSubmitCode } from "../hooks/useSubmissions";
+import { useGetHint, useGetCodeReview } from "../hooks/useAI";
 import Navbar from "../components/Navbar";
 
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import ProblemDescription from "../components/ProblemDescription";
 import OutputPanel from "../components/OutputPanel";
 import CodeEditorPanel from "../components/CodeEditorPanel";
+import TestResultsPanel from "../components/TestResultsPanel";
 import { executeCode } from "../lib/piston";
 
 import toast from "react-hot-toast";
 import confetti from "canvas-confetti";
+import { Bookmark, BookmarkCheck, Lightbulb, MessageSquare } from "lucide-react";
 
 function ProblemPage() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [currentProblemId, setCurrentProblemId] = useState("two-sum");
+  // Fetch all problems for the dropdown
+  const { data: allProblemsData } = useProblems();
+  const allProblems = allProblemsData?.data || [];
+
+  // Fetch current problem
+  const currentProblemId = id || "two-sum";
+  const { data: problemData, isLoading } = useProblem(currentProblemId);
+  const currentProblem = problemData?.data;
+
+  // Bookmark functionality
+  const { data: bookmarkData } = useCheckBookmark(currentProblemId);
+  const isBookmarked = bookmarkData?.data?.isBookmarked || false;
+  const addBookmarkMutation = useAddBookmark();
+  const removeBookmarkMutation = useRemoveBookmark();
+
+  // Submission functionality
+  const submitCodeMutation = useSubmitCode();
+
+  // AI functionality
+  const getHintMutation = useGetHint();
+  const getCodeReviewMutation = useGetCodeReview();
+
   const [selectedLanguage, setSelectedLanguage] = useState("javascript");
-  const [code, setCode] = useState(PROBLEMS[currentProblemId].starterCode.javascript);
+  const [code, setCode] = useState("");
   const [output, setOutput] = useState(null);
+  const [testResults, setTestResults] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hintLevel, setHintLevel] = useState(1);
+  const [currentHint, setCurrentHint] = useState(null);
+  const [codeReview, setCodeReview] = useState(null);
 
-  const currentProblem = PROBLEMS[currentProblemId];
-
-  // update problem when URL param changes
+  // Update code when problem or language changes
   useEffect(() => {
-    if (id && PROBLEMS[id]) {
-      setCurrentProblemId(id);
-      setCode(PROBLEMS[id].starterCode[selectedLanguage]);
+    if (currentProblem?.starterCode) {
+      setCode(currentProblem.starterCode[selectedLanguage] || "");
       setOutput(null);
+      setTestResults(null);
+      setCurrentHint(null);
+      setCodeReview(null);
     }
-  }, [id, selectedLanguage]);
-
-  const handleLanguageChange = (e) => {
-    const newLang = e.target.value;
-    setSelectedLanguage(newLang);
-    setCode(currentProblem.starterCode[newLang]);
-    setOutput(null);
-  };
-
-  const handleProblemChange = (newProblemId) => navigate(`/problem/${newProblemId}`);
+  }, [currentProblem, selectedLanguage]);
 
   const triggerConfetti = () => {
     confetti({
-      particleCount: 80,
-      spread: 250,
-      origin: { x: 0.2, y: 0.6 },
-    });
-
-    confetti({
-      particleCount: 80,
-      spread: 250,
-      origin: { x: 0.8, y: 0.6 },
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
     });
   };
 
-  const normalizeOutput = (output) => {
-    // normalize output for comparison (trim whitespace, handle different spacing)
-    return output
-      .trim()
-      .split("\n")
-      .map((line) =>
-        line
-          .trim()
-          // remove spaces after [ and before ]
-          .replace(/\[\s+/g, "[")
-          .replace(/\s+\]/g, "]")
-          // normalize spaces around commas to single space after comma
-          .replace(/\s*,\s*/g, ",")
-      )
-      .filter((line) => line.length > 0)
-      .join("\n");
+  const handleLanguageChange = (e) => {
+    setSelectedLanguage(e.target.value);
   };
 
-  const checkIfTestsPassed = (actualOutput, expectedOutput) => {
-    const normalizedActual = normalizeOutput(actualOutput);
-    const normalizedExpected = normalizeOutput(expectedOutput);
-
-    return normalizedActual == normalizedExpected;
+  const handleProblemChange = (newProblemId) => {
+    navigate(`/problem/${newProblemId}`);
   };
 
   const handleRunCode = async () => {
     setIsRunning(true);
     setOutput(null);
+    setTestResults(null);
 
-    const result = await executeCode(selectedLanguage, code);
-    setOutput(result);
-    setIsRunning(false);
-
-    // check if code executed successfully and matches expected output
-
-    if (result.success) {
-      const expectedOutput = currentProblem.expectedOutput[selectedLanguage];
-      const testsPassed = checkIfTestsPassed(result.output, expectedOutput);
-
-      if (testsPassed) {
-        triggerConfetti();
-        toast.success("All tests passed! Great job!");
-      } else {
-        toast.error("Tests failed. Check your output!");
-      }
-    } else {
-      toast.error("Code execution failed!");
+    try {
+      const result = await executeCode(selectedLanguage, code);
+      setOutput(result);
+    } catch (error) {
+      setOutput({
+        success: false,
+        error: error.message,
+      });
+    } finally {
+      setIsRunning(false);
     }
   };
+
+  const handleToggleBookmark = () => {
+    if (isBookmarked) {
+      removeBookmarkMutation.mutate(currentProblemId);
+    } else {
+      addBookmarkMutation.mutate({ problemId: currentProblemId, data: {} });
+    }
+  };
+
+  const handleSubmitCode = async () => {
+    setIsSubmitting(true);
+    setOutput(null);
+    setTestResults(null);
+
+    try {
+      const result = await submitCodeMutation.mutateAsync({
+        problemId: currentProblemId,
+        code,
+        language: selectedLanguage,
+      });
+
+      // Set test results
+      setTestResults(result.data);
+
+      // Trigger confetti if all tests passed
+      if (result.data.status === "Accepted") {
+        triggerConfetti();
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleGetHint = async () => {
+    try {
+      const result = await getHintMutation.mutateAsync({
+        problemId: currentProblemId,
+        code,
+        hintLevel,
+      });
+      setCurrentHint(result.data.hint);
+      toast.success(`Hint level ${hintLevel} generated!`);
+    } catch (error) {
+      console.error("Hint error:", error);
+    }
+  };
+
+  const handleGetCodeReview = async () => {
+    if (!code.trim()) {
+      toast.error("Please write some code first!");
+      return;
+    }
+    try {
+      const result = await getCodeReviewMutation.mutateAsync({
+        problemId: currentProblemId,
+        code,
+        language: selectedLanguage,
+      });
+      setCodeReview(result.data);
+    } catch (error) {
+      console.error("Code review error:", error);
+    }
+  };
+
+  if (isLoading || !currentProblem) {
+    return (
+      <div className="h-screen bg-base-100 flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center">
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen bg-base-100 flex flex-col">
@@ -118,7 +186,18 @@ function ProblemPage() {
               problem={currentProblem}
               currentProblemId={currentProblemId}
               onProblemChange={handleProblemChange}
-              allProblems={Object.values(PROBLEMS)}
+              allProblems={allProblems}
+              isBookmarked={isBookmarked}
+              onToggleBookmark={handleToggleBookmark}
+              onGetHint={handleGetHint}
+              onGetCodeReview={handleGetCodeReview}
+              hintLevel={hintLevel}
+              onHintLevelChange={setHintLevel}
+              currentHint={currentHint}
+              codeReview={codeReview}
+              isGettingHint={getHintMutation.isPending}
+              isReviewingCode={getCodeReviewMutation.isPending}
+              hasCode={code.trim().length > 0}
             />
           </Panel>
 
@@ -133,18 +212,29 @@ function ProblemPage() {
                   selectedLanguage={selectedLanguage}
                   code={code}
                   isRunning={isRunning}
+                  isSubmitting={isSubmitting}
                   onLanguageChange={handleLanguageChange}
                   onCodeChange={setCode}
                   onRunCode={handleRunCode}
+                  onSubmitCode={handleSubmitCode}
                 />
               </Panel>
 
               <PanelResizeHandle className="h-2 bg-base-300 hover:bg-primary transition-colors cursor-row-resize" />
 
-              {/* Bottom panel - Output Panel*/}
-
+              {/* Bottom panel - Output/Test Results Panel*/}
               <Panel defaultSize={30} minSize={30}>
-                <OutputPanel output={output} />
+                {testResults ? (
+                  <TestResultsPanel
+                    testResults={testResults.testResults}
+                    status={testResults.status}
+                    passedTests={testResults.passedTests}
+                    totalTests={testResults.totalTests}
+                    runtime={testResults.runtime}
+                  />
+                ) : (
+                  <OutputPanel output={output} />
+                )}
               </Panel>
             </PanelGroup>
           </Panel>
@@ -153,5 +243,4 @@ function ProblemPage() {
     </div>
   );
 }
-
 export default ProblemPage;

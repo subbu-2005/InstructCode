@@ -1,14 +1,16 @@
 import Editor from "@monaco-editor/react";
-import { Loader2Icon, PlayIcon } from "lucide-react";
+import { Loader2Icon, PlayIcon, Send } from "lucide-react";
 import { LANGUAGE_CONFIG } from "../data/problems";
 
 function CodeEditorPanel({
   selectedLanguage,
   code,
   isRunning,
+  isSubmitting,
   onLanguageChange,
   onCodeChange,
   onRunCode,
+  onSubmitCode,
 }) {
   return (
     <div className="h-full bg-base-300 flex flex-col">
@@ -28,19 +30,37 @@ function CodeEditorPanel({
           </select>
         </div>
 
-        <button className="btn btn-primary btn-sm gap-2" disabled={isRunning} onClick={onRunCode}>
-          {isRunning ? (
-            <>
-              <Loader2Icon className="size-4 animate-spin" />
-              Running...
-            </>
-          ) : (
-            <>
-              <PlayIcon className="size-4" />
-              Run Code
-            </>
+        <div className="flex gap-2">
+          <button className="btn btn-ghost btn-sm gap-2" disabled={isRunning || isSubmitting} onClick={onRunCode}>
+            {isRunning ? (
+              <>
+                <Loader2Icon className="size-4 animate-spin" />
+                Running...
+              </>
+            ) : (
+              <>
+                <PlayIcon className="size-4" />
+                Run Code
+              </>
+            )}
+          </button>
+
+          {onSubmitCode && (
+            <button className="btn btn-primary btn-sm gap-2" disabled={isRunning || isSubmitting} onClick={onSubmitCode}>
+              {isSubmitting ? (
+                <>
+                  <Loader2Icon className="size-4 animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  <Send className="size-4" />
+                  Submit
+                </>
+              )}
+            </button>
           )}
-        </button>
+        </div>
       </div>
 
       <div className="flex-1">
