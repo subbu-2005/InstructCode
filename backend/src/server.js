@@ -139,3 +139,6 @@ const startServer = async () => {
 };
 
 startServer();
+
+// Export for Vercel serverless deployment
+export default app;
