@@ -29,21 +29,21 @@ function LeaderboardPage() {
 
             <Navbar />
 
-            <div className="relative z-10 container mx-auto px-4 py-8">
-                <h1 className="text-5xl font-black mb-8 flex items-center gap-4">
-                    <Trophy size={48} className="text-yellow-400" />
+            <div className="relative z-10 container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6 sm:mb-8 flex items-center gap-3 sm:gap-4">
+                    <Trophy size={36} className="sm:size-12 text-yellow-400" />
                     <span className="gradient-text-purple-blue">Leaderboard</span>
                 </h1>
 
                 {/* Timeframe Filter */}
-                <div className="flex gap-3 justify-center mb-8">
+                <div className="flex flex-wrap gap-2 sm:gap-3 justify-center mb-6 sm:mb-8">
                     {["all", "daily", "weekly", "monthly"].map((tf) => (
                         <button
                             key={tf}
                             onClick={() => setTimeframe(tf)}
-                            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${timeframe === tf
-                                    ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white glow-purple-blue"
-                                    : "glass-card text-gray-300 hover:text-white hover-glow-purple border-purple-500/20"
+                            className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 ${timeframe === tf
+                                ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white glow-purple-blue"
+                                : "glass-card text-gray-300 hover:text-white hover-glow-purple border-purple-500/20"
                                 }`}
                         >
                             {tf.charAt(0).toUpperCase() + tf.slice(1)}
@@ -52,8 +52,8 @@ function LeaderboardPage() {
                 </div>
 
                 {/* Leaderboard Table */}
-                <div className="glass-card p-8 rounded-2xl border-purple-500/20 glow-purple-blue">
-                    <h2 className="text-3xl font-bold mb-6 gradient-text-purple-blue">Top Coders</h2>
+                <div className="glass-card p-4 sm:p-6 lg:p-8 rounded-2xl border-purple-500/20 glow-purple-blue">
+                    <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 gradient-text-purple-blue">Top Coders</h2>
 
                     {isLoading ? (
                         <div className="flex justify-center py-12">

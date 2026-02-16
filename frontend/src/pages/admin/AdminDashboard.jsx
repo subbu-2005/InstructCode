@@ -20,16 +20,16 @@ export default function AdminDashboard() {
     const statsData = stats?.data || {};
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
             <div>
-                <h1 className="text-4xl font-black mb-3">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black mb-3">
                     <span className="gradient-text-purple-blue">Dashboard</span> Overview
                 </h1>
-                <p className="text-gray-400 text-lg">Welcome to the admin dashboard</p>
+                <p className="text-gray-400 text-base sm:text-lg">Welcome to the admin dashboard</p>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {/* Total Users */}
                 <div className="glass-card p-6 rounded-2xl border-purple-500/20 hover-glow-purple transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">

@@ -44,26 +44,26 @@ function ProblemsPage() {
 
       <Navbar />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 py-12">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* HEADER */}
-        <div className="mb-12">
-          <h1 className="text-5xl font-black mb-3">
+        <div className="mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-3">
             <span className="gradient-text-purple-blue">Practice</span> Problems
           </h1>
-          <p className="text-xl text-gray-400">
+          <p className="text-base sm:text-xl text-gray-400">
             Sharpen your coding skills with these curated problems
           </p>
         </div>
 
         {/* PROBLEMS LIST */}
-        <div className="space-y-4 mb-12">
+        <div className="space-y-4 mb-8 sm:mb-12">
           {problems.map((problem) => (
             <Link
               key={problem.id}
               to={`/problem/${problem.id}`}
-              className="block glass-card p-6 rounded-2xl border-purple-500/20 hover-glow-purple transition-all duration-300 hover:scale-[1.02] group"
+              className="block glass-card p-4 sm:p-6 rounded-2xl border-purple-500/20 hover-glow-purple transition-all duration-300 hover:scale-[1.02] group"
             >
-              <div className="flex items-center justify-between gap-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 {/* LEFT SIDE */}
                 <div className="flex-1">
                   <div className="flex items-center gap-4 mb-3">
@@ -96,8 +96,8 @@ function ProblemsPage() {
         </div>
 
         {/* STATS FOOTER */}
-        <div className="glass-card p-8 rounded-2xl border-purple-500/20 glow-purple-blue">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="glass-card p-6 sm:p-8 rounded-2xl border-purple-500/20 glow-purple-blue">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <div className="text-center">
               <div className="text-sm text-gray-400 mb-2">Total Problems</div>
               <div className="text-4xl font-black gradient-text-purple-blue">{problems.length}</div>

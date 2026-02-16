@@ -43,10 +43,10 @@ export default function AdminUsers() {
     const pagination = data?.pagination || {};
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold mb-2">User Management</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold mb-2">User Management</h1>
                     <p className="text-base-content/70">Manage all platform users</p>
                 </div>
             </div>
@@ -81,7 +81,7 @@ export default function AdminUsers() {
             </div>
 
             {/* Users Table */}
-            <div className="card bg-base-100 shadow-lg">
+            <div className="card bg-base-100 shadow-lg overflow-x-auto">
                 <div className="card-body">
                     <div className="overflow-x-auto">
                         <table className="table table-zebra">
