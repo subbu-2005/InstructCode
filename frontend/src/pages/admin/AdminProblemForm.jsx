@@ -288,17 +288,15 @@ export default function AdminProblemForm() {
                     </p>
                 </div>
 
-                {/* AI Generation Button */}
-                {!isEditing && (
-                    <button
-                        type="button"
-                        className="btn btn-primary gap-2"
-                        onClick={() => setShowAIModal(true)}
-                    >
-                        <Sparkles size={18} />
-                        Generate with AI
-                    </button>
-                )}
+                {/* AI Generation Button - Available for both Create and Edit */}
+                <button
+                    type="button"
+                    className="btn btn-primary gap-2"
+                    onClick={() => setShowAIModal(true)}
+                >
+                    <Sparkles size={18} />
+                    {isEditing ? "Enhance with AI" : "Generate with AI"}
+                </button>
             </div>
 
             {/* AI Generation Modal */}
@@ -307,7 +305,7 @@ export default function AdminProblemForm() {
                     <div className="modal-box">
                         <h3 className="font-bold text-2xl mb-4 flex items-center gap-2">
                             <Sparkles className="text-primary" size={24} />
-                            Generate Problem with AI
+                            {isEditing ? "Enhance Problem with AI" : "Generate Problem with AI"}
                         </h3>
 
                         <div className="space-y-4">
@@ -316,17 +314,25 @@ export default function AdminProblemForm() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
                                 <span className="text-sm">
-                                    Describe the problem you want to create. AI will generate the complete problem with examples, constraints, and starter code!
+                                    {isEditing
+                                        ? "Describe how you want to improve this problem. AI will enhance the description, examples, constraints, and code!"
+                                        : "Describe the problem you want to create. AI will generate the complete problem with examples, constraints, and starter code!"
+                                    }
                                 </span>
                             </div>
 
                             <div className="form-control">
                                 <label className="label">
-                                    <span className="label-text font-semibold">Problem Description</span>
+                                    <span className="label-text font-semibold">
+                                        {isEditing ? "Enhancement Instructions" : "Problem Description"}
+                                    </span>
                                 </label>
                                 <textarea
                                     className="textarea textarea-bordered h-32"
-                                    placeholder="Example: Create a medium difficulty problem about finding the longest substring without repeating characters in an array"
+                                    placeholder={isEditing
+                                        ? "Example: Add more edge cases, improve the description clarity, add harder test cases, or enhance the examples"
+                                        : "Example: Create a medium difficulty problem about finding the longest substring without repeating characters in an array"
+                                    }
                                     value={aiPrompt}
                                     onChange={(e) => setAiPrompt(e.target.value)}
                                     disabled={isGenerating}
@@ -336,9 +342,19 @@ export default function AdminProblemForm() {
                             <div className="text-sm text-base-content/70">
                                 <p className="font-semibold mb-1">Example prompts:</p>
                                 <ul className="list-disc list-inside space-y-1">
-                                    <li>"Create a hard problem about binary tree traversal"</li>
-                                    <li>"Easy array problem about finding duplicates"</li>
-                                    <li>"Medium difficulty dynamic programming problem"</li>
+                                    {isEditing ? (
+                                        <>
+                                            <li>"Add more challenging edge cases and examples"</li>
+                                            <li>"Improve description clarity and add better constraints"</li>
+                                            <li>"Generate additional test cases for better coverage"</li>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <li>"Create a hard problem about binary tree traversal"</li>
+                                            <li>"Easy array problem about finding duplicates"</li>
+                                            <li>"Medium difficulty dynamic programming problem"</li>
+                                        </>
+                                    )}
                                 </ul>
                             </div>
                         </div>
