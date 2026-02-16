@@ -24,7 +24,32 @@ const __dirname = path.resolve();
 
 // middleware
 app.use(express.json());
-app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }));
+
+// CORS configuration for production deployment
+const allowedOrigins = [
+  ENV.CLIENT_URL,
+  'https://instructcode.vercel.app',
+  'https://instruct-code-pgszoe25w-subramanyas-projects-f4e4abd8.vercel.app', // Preview deployments
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.some(allowed => origin.startsWith(allowed.replace('https://', 'https://').split('.vercel.app')[0]))) {
+      callback(null, true);
+    } else if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  exposedHeaders: ['Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+}));
+
 app.use(clerkMiddleware());
 
 // Add logging for routes
