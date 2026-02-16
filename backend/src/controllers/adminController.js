@@ -291,6 +291,10 @@ export const getProblemDistribution = async (req, res) => {
  * @route GET /api/admin/users
  */
 export const getAllUsers = async (req, res) => {
+    console.log("\n" + "🔵".repeat(40));
+    console.log("📋 GET ALL USERS - Admin Endpoint");
+    console.log("🔵".repeat(40));
+
     try {
         const {
             page = 1,
@@ -299,6 +303,8 @@ export const getAllUsers = async (req, res) => {
             sortBy = "createdAt",
             sortOrder = "desc",
         } = req.query;
+
+        console.log("📊 Query Parameters:", { page, limit, search, sortBy, sortOrder });
 
         // Build search query
         const query = {};
@@ -342,6 +348,9 @@ export const getAllUsers = async (req, res) => {
                 };
             })
         );
+
+        console.log(`✅ Successfully fetched ${usersWithStats.length} users (Total: ${total})`);
+        console.log("🔵".repeat(40) + "\n");
 
         res.status(200).json({
             success: true,

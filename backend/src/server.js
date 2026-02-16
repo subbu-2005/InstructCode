@@ -17,6 +17,7 @@ import aiRoutes from "./routes/aiRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import User from "./models/User.js"; // ← ADD THIS IMPORT
 import { upsertStreamUser } from "./lib/stream.js";
+import { requestLogger, errorLogger } from "./middleware/logger.js";
 
 const app = express();
 
@@ -51,6 +52,9 @@ app.use(cors({
 }));
 
 app.use(clerkMiddleware());
+
+// Add comprehensive logging for all requests
+app.use(requestLogger);
 
 // Add logging for routes
 console.log("📍 Registering routes...");
